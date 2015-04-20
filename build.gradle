@@ -18,5 +18,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/core.jar')
+    //compile files('libs/core.jar')
+
+    compile 'com.google.zxing:core:3.2.0'
 }
