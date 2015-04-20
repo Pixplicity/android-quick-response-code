@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "19.1.0"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.jwetherell.quick_response_code"
         minSdkVersion 7
         targetSdkVersion 22
     }

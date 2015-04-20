@@ -12,12 +12,10 @@
 
     <uses-permission android:name="android.permission.CAMERA"/>
 
-    <application android:icon="@drawable/icon" 
-        android:label="@string/app_name">
+    <application>
         
         <activity android:name=".CaptureActivity"
             android:label="@string/capture_name"
-            android:icon="@drawable/icon"
             android:screenOrientation="landscape"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
@@ -32,7 +30,6 @@
 
         <activity android:name=".DecoderActivity"
             android:label="@string/decoder_name"
-            android:icon="@drawable/icon"
             android:screenOrientation="landscape"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
@@ -47,7 +44,6 @@
 
         <activity android:name=".EncoderActivity"
             android:label="@string/encoder_name"
-            android:icon="@drawable/icon"
             android:screenOrientation="landscape"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
