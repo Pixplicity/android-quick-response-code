@@ -22,8 +22,12 @@ import com.jwetherell.quick_response_code.camera.CameraManager;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
+import com.jwetherell.quick_response_code.result.ResultHandler;
+import com.jwetherell.quick_response_code.result.ResultHandlerFactory;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,16 +35,22 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Example Decoder Activity.
- * 
+ *
  * @author Justin Wetherell (phishman3579@gmail.com)
  */
 public class DecoderActivity extends Activity implements IDecoderActivity, SurfaceHolder.Callback {
@@ -53,6 +63,7 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     protected boolean hasSurface = false;
     protected Collection<BarcodeFormat> decodeFormats = null;
     protected String characterSet = null;
+    protected TextView statusView;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -62,6 +73,15 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        statusView = (TextView) findViewById(R.id.status_view);
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            Toast.makeText(getApplicationContext(), extras.getString("toastMessage"),
+                    Toast.LENGTH_LONG).show();
+            getIntent().removeExtra("toastMessage");
+        }
 
         handler = null;
         hasSurface = false;
@@ -169,6 +189,16 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     @Override
     public void handleDecode(Result rawResult, Bitmap barcode) {
         drawResultPoints(barcode, rawResult);
+        if (getCallingActivity() != null) {
+            ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
+            CharSequence charResult = resultHandler.getDisplayContents();
+            String displayContents = charResult.toString();
+            Intent result = new Intent();
+            result.putExtra("result", displayContents);
+            setResult(Activity.RESULT_OK, result);
+            finish();
+        }
+
     }
 
     protected void drawResultPoints(Bitmap barcode, Result rawResult) {
@@ -213,7 +243,8 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
             cameraManager.openDriver(surfaceHolder);
             // Creating the handler starts the preview, which can also throw a
             // RuntimeException.
-            if (handler == null) handler = new DecoderActivityHandler(this, decodeFormats, characterSet, cameraManager);
+            if (handler == null)
+                handler = new DecoderActivityHandler(this, decodeFormats, characterSet, cameraManager);
         } catch (IOException ioe) {
             Log.w(TAG, ioe);
         } catch (RuntimeException e) {
