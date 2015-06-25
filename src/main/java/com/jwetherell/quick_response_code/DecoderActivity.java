@@ -58,8 +58,6 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
 
     private static final String TAG = DecoderActivity.class.getSimpleName();
 
-    public static final int REQUEST_QR_RESULT = 1001;
-
     public static final String EXTRA_TOAST_MESSAGE = "toastMessage";
 
     protected DecoderActivityHandler handler = null;
@@ -70,16 +68,16 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     protected String characterSet = null;
     protected TextView statusView;
 
-    public static void start(Activity activity) {
-        start(activity, null);
+    public static void start(Activity activity, int requestCode) {
+        start(activity, requestCode, null);
     }
 
-    public static void start(Activity activity, String toastMessage) {
+    public static void start(Activity activity, int requestCode, String toastMessage) {
         final Intent intent = new Intent(activity, DecoderActivity.class);
         intent.putExtra(EXTRA_TOAST_MESSAGE, toastMessage);
         activity.startActivityForResult(
                 intent,
-                REQUEST_QR_RESULT);
+                requestCode);
     }
 
     @Override
