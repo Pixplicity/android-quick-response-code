@@ -26,6 +26,7 @@ import com.jwetherell.quick_response_code.result.ResultHandler;
 import com.jwetherell.quick_response_code.result.ResultHandlerFactory;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -57,6 +58,10 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
 
     private static final String TAG = DecoderActivity.class.getSimpleName();
 
+    public static final int REQUEST_QR_RESULT = 1001;
+
+    public static final String EXTRA_TOAST_MESSAGE = "toastMessage";
+
     protected DecoderActivityHandler handler = null;
     protected ViewfinderView viewfinderView = null;
     protected CameraManager cameraManager = null;
@@ -64,6 +69,18 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     protected Collection<BarcodeFormat> decodeFormats = null;
     protected String characterSet = null;
     protected TextView statusView;
+
+    public static void start(Activity activity) {
+        start(activity, null);
+    }
+
+    public static void start(Activity activity, String toastMessage) {
+        final Intent intent = new Intent(activity, DecoderActivity.class);
+        intent.putExtra(EXTRA_TOAST_MESSAGE, toastMessage);
+        activity.startActivityForResult(
+                intent,
+                REQUEST_QR_RESULT);
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -78,9 +95,9 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            Toast.makeText(getApplicationContext(), extras.getString("toastMessage"),
-                    Toast.LENGTH_LONG).show();
-            getIntent().removeExtra("toastMessage");
+            Toast.makeText(getApplicationContext(), extras.getString(EXTRA_TOAST_MESSAGE),
+                           Toast.LENGTH_LONG).show();
+            getIntent().removeExtra(EXTRA_TOAST_MESSAGE);
         }
 
         handler = null;
@@ -99,7 +116,9 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
         Log.v(TAG, "onResume()");
 
         // CameraManager must be initialized here, not in onCreate().
-        if (cameraManager == null) cameraManager = new CameraManager(getApplication());
+        if (cameraManager == null) {
+            cameraManager = new CameraManager(getApplication());
+        }
 
         if (viewfinderView == null) {
             viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
@@ -153,8 +172,9 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (holder == null)
+        if (holder == null) {
             Log.e(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
+        }
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
@@ -243,8 +263,9 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
             cameraManager.openDriver(surfaceHolder);
             // Creating the handler starts the preview, which can also throw a
             // RuntimeException.
-            if (handler == null)
+            if (handler == null) {
                 handler = new DecoderActivityHandler(this, decodeFormats, characterSet, cameraManager);
+            }
         } catch (IOException ioe) {
             Log.w(TAG, ioe);
         } catch (RuntimeException e) {
