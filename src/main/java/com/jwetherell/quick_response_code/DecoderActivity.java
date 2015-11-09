@@ -14,40 +14,34 @@
 
 package com.jwetherell.quick_response_code;
 
-import java.io.IOException;
-import java.util.Collection;
-
-import com.jwetherell.quick_response_code.R;
-import com.jwetherell.quick_response_code.camera.CameraManager;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
-import com.jwetherell.quick_response_code.result.ResultHandler;
-import com.jwetherell.quick_response_code.result.ResultHandlerFactory;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+import com.google.zxing.ResultPoint;
+import com.jwetherell.quick_response_code.camera.CameraManager;
+import com.jwetherell.quick_response_code.result.ResultHandler;
+import com.jwetherell.quick_response_code.result.ResultHandlerFactory;
+
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Example Decoder Activity.
@@ -80,6 +74,18 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
                 requestCode);
     }
 
+    public static void start(Fragment fragment, int requestCode) {
+        start(fragment, requestCode, null);
+    }
+
+    public static void start(Fragment fragment, int requestCode, String toastMessage) {
+        final Intent intent = new Intent(fragment.getActivity(), DecoderActivity.class);
+        intent.putExtra(EXTRA_TOAST_MESSAGE, toastMessage);
+        fragment.startActivityForResult(
+                intent,
+                requestCode);
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -93,9 +99,12 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            Toast.makeText(getApplicationContext(), extras.getString(EXTRA_TOAST_MESSAGE),
-                           Toast.LENGTH_LONG).show();
-            getIntent().removeExtra(EXTRA_TOAST_MESSAGE);
+            String toastMessage = extras.getString(EXTRA_TOAST_MESSAGE);
+            if (toastMessage != null) {
+                Toast.makeText(getApplicationContext(), toastMessage,
+                        Toast.LENGTH_LONG).show();
+                getIntent().removeExtra(EXTRA_TOAST_MESSAGE);
+            }
         }
 
         handler = null;
