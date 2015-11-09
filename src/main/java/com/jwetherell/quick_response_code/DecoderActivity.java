@@ -90,7 +90,6 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.decoder);
-        Log.v(TAG, "onCreate()");
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -112,15 +111,8 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(TAG, "onDestroy()");
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume()");
 
         // CameraManager must be initialized here, not in onCreate().
         if (cameraManager == null) {
@@ -152,7 +144,6 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     @Override
     protected void onPause() {
         super.onPause();
-        Log.v(TAG, "onPause()");
 
         if (handler != null) {
             handler.quitSynchronously();
