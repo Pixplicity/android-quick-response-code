@@ -24,12 +24,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.util.Collection;
-
-import com.jwetherell.quick_response_code.R;
-import com.jwetherell.quick_response_code.camera.CameraManager;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.jwetherell.quick_response_code.camera.CameraManager;
+
+import java.util.Collection;
 
 /**
  * This class handles all the messaging which comprises the state machine for
@@ -50,7 +49,7 @@ public final class DecoderActivityHandler extends Handler {
         PREVIEW, SUCCESS, DONE
     }
 
-    DecoderActivityHandler(IDecoderActivity activity, Collection<BarcodeFormat> decodeFormats, String characterSet,
+    public DecoderActivityHandler(IDecoderActivity activity, Collection<BarcodeFormat> decodeFormats, String characterSet,
             CameraManager cameraManager) {
         this.activity = activity;
         decodeThread = new DecodeThread(activity, decodeFormats, characterSet, new ViewfinderResultPointCallback(

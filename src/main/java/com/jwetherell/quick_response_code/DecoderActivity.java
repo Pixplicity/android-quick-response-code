@@ -63,24 +63,14 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
     protected TextView statusView;
 
     public static void start(Activity activity, int requestCode) {
-        start(activity, requestCode, null);
-    }
-
-    public static void start(Activity activity, int requestCode, String toastMessage) {
         final Intent intent = new Intent(activity, DecoderActivity.class);
-        intent.putExtra(EXTRA_TOAST_MESSAGE, toastMessage);
         activity.startActivityForResult(
                 intent,
                 requestCode);
     }
 
     public static void start(Fragment fragment, int requestCode) {
-        start(fragment, requestCode, null);
-    }
-
-    public static void start(Fragment fragment, int requestCode, String toastMessage) {
         final Intent intent = new Intent(fragment.getActivity(), DecoderActivity.class);
-        intent.putExtra(EXTRA_TOAST_MESSAGE, toastMessage);
         fragment.startActivityForResult(
                 intent,
                 requestCode);
@@ -272,4 +262,5 @@ public class DecoderActivity extends Activity implements IDecoderActivity, Surfa
             Log.w(TAG, "Unexpected error initializing camera", e);
         }
     }
+
 }

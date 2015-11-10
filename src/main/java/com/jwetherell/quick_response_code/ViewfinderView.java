@@ -25,12 +25,11 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.google.zxing.ResultPoint;
+import com.jwetherell.quick_response_code.camera.CameraManager;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.jwetherell.quick_response_code.R;
-import com.jwetherell.quick_response_code.camera.CameraManager;
-import com.google.zxing.ResultPoint;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder
@@ -67,13 +66,17 @@ public final class ViewfinderView extends View {
         // time in onDraw().
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Resources resources = getResources();
-        maskColor = resources.getColor(R.color.viewfinder_mask);
-        resultColor = resources.getColor(R.color.result_view);
-        frameColor = resources.getColor(R.color.viewfinder_frame);
-        laserColor = resources.getColor(R.color.viewfinder_laser);
-        resultPointColor = resources.getColor(R.color.possible_result_points);
+        if (!isInEditMode()) {
+            maskColor = resources.getColor(R.color.viewfinder_mask);
+            resultColor = resources.getColor(R.color.result_view);
+            frameColor = resources.getColor(R.color.viewfinder_frame);
+            laserColor = resources.getColor(R.color.viewfinder_laser);
+            resultPointColor = resources.getColor(R.color.possible_result_points);
+        } else {
+            maskColor = resultColor = frameColor = laserColor = resultPointColor = 0;
+        }
         scannerAlpha = 0;
-        possibleResultPoints = new ArrayList<ResultPoint>(5);
+        possibleResultPoints = new ArrayList<>(5);
         lastPossibleResultPoints = null;
     }
 
@@ -83,6 +86,9 @@ public final class ViewfinderView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
+        if (cameraManager == null) {
+            return;
+        }
         Rect frame = cameraManager.getFramingRect();
         if (frame == null) {
             return;
@@ -129,7 +135,7 @@ public final class ViewfinderView extends View {
             if (currentPossible.isEmpty()) {
                 lastPossibleResultPoints = null;
             } else {
-                possibleResultPoints = new ArrayList<ResultPoint>(5);
+                possibleResultPoints = new ArrayList<>(5);
                 lastPossibleResultPoints = currentPossible;
                 paint.setAlpha(CURRENT_POINT_OPACITY);
                 paint.setColor(resultPointColor);
