@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 25
+        targetSdkVersion 26
     }
 
     buildTypes {
@@ -19,5 +19,5 @@ android {
 
 dependencies {
     compile 'com.google.zxing:core:3.2.0'
-    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:support-v4:26.0.0-beta2'
 }
