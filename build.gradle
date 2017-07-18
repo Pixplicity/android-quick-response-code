@@ -5,7 +5,7 @@ android {
     buildToolsVersion '26.0.0'
 
     defaultConfig {
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 26
     }
 
@@ -18,6 +18,6 @@ android {
 }
 
 dependencies {
-    compile 'com.google.zxing:core:3.2.0'
     compile 'com.android.support:support-v4:26.0.0-beta2'
+    compile 'com.google.zxing:core:3.2.0'
 }
